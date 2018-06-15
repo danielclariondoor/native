@@ -79,6 +79,16 @@ const FormSchemaField = {
           }))
         })
         break
+
+      case 'fieldset':
+        field.items.forEach((item) => {
+          children.push(createElement(FormSchemaField, {
+            props: { vm, inputWrappingClass, field: item }
+          }))
+        })
+        return createElement('fieldset', {
+          props: { vm }
+        }, children)
     }
 
     return createElement(FormSchemaWrappingInput, {

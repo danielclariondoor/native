@@ -2,7 +2,7 @@
 
 /* eslint-disable no-labels */
 
-const ARRAY_KEYWORDS = ['anyOf', 'oneOf', 'enum']
+const ARRAY_KEYWORDS = ['anyOf', 'oneOf', 'enum', 'items']
 
 export function setCommonFields (schema, field) {
   field.attrs.value = field.attrs.hasOwnProperty('value')
@@ -26,7 +26,9 @@ export function loadFields (schema, fields, name = null) {
       for (let key in schema.properties) {
         if (schema.required) {
           for (let field of schema.required) {
-            schema.properties[field].required = true
+            if (schema.properties.hasOwnProperty(field)) {
+              schema.properties[field].required = true
+            }
           }
         }
 
@@ -207,6 +209,15 @@ export function parseArray (schema, name = null) {
 
           if (field.attrs.value.length === 0) {
             field.attrs.value = arrayValues(field)
+          }
+          break loop
+
+        case 'items':
+          loadFields(schema.items, field.items, name)
+          field.attrs.type = 'fieldset'
+          field.attrs.value = field.attrs.value || []
+          if (!field.title) {
+            field.title = schema.title
           }
           break loop
       }
